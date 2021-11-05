@@ -1,80 +1,114 @@
-## The PyTorch Implementation Of SummaRuNNer
+# PyTorch SummaRuNNer
+A fork of hpzhao's work, which includes [no-execution's extractive labeler](https://github.com/no-execution/Summa_label).
 
-[![License](https://img.shields.io/badge/license-MIT-000000.svg)](https://opensource.org/licenses/MIT)
-
-### Statement
-
-+ **Not the official implementation! Just For Learning and communication!**
-
-### Models
-
-1. RNN_RNN
-<div  align="center">
-<img src="images/RNN_RNN.jpg" width = "350" height = "350" align=center />
-</div>
-
-2. CNN_RNN
-<div  align="center">
-<img src="images/CNN_RNN.png" width = "350" height = "260" align=center />
-</div>
-
-3. Hierarchical Attention Networks
-<div  align="center">
-<img src="images/Hiarchical_Attn.png" width = "350" height = "350" align=center />
-</div>
+## Test to see if installation is correct
+Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data](https://drive.google.com/file/d/1JgsboIAs__r6XfCbkDWgmberXJw8FBWE/view?usp=sharing) and putting it in the ``data`` folder,
 
 ### Setup
+1. Use Python 3.6
 
-Requires [pipenv](https://docs.pipenv.org/). Use `pip install pipenv` if not installed.
+2. ``pipenv install``
+    - One of the requirements is PyTorch 0.3.1. This does not seem to work on Windows, but seems to work on Linux distributions (and maybe Mac). See https://pytorch.org/get-started/previous-versions/
+
+3. ``pipenv shell``
+    You should see something like
+    ``((SummaRuNNer) ) user@PC:/mnt/c/Users/user$``
+    at the prompt
+
+### Run SummaRuNNer
+4. Test without gpu: 
+    ```
+    python main.py -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt
+    ```
+
+    Test with gpu: 
+
+    ```
+    python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt
+    ```
+
+    Results of predictions are stored in ``outputs/hyp`` while the "gold-standard" summaries are stored in ``outputs/ref``.
+
+### Install rouge
+5. Point pyrouge to the rouge folder: 
+    ```
+    pyrouge_set_rouge_path absolute/path/to/ROUGE-1.5.5/
+    ```
+
+6. 
+    ```
+    sudo apt-get install libxml-parser-perl
+    ```
+    Or the equivalent on Mac (to install Perl).
+
+
+    You might also need to install pyrouge/rouge:
+    ```
+    pip install pyrouge rouge
+    ```
+
+7. 
+    ```
+    cpan install XML::DOM
+    ``` 
+    to install XML::DOM (Perl package).
+
+8. Go into ``outputs/ROUGE-1.5.5/data``, then
+
+    ```
+    rm WordNet-2.0.exc.db
+
+    ./WordNet-2.0-Exceptions/buildExeptionDB.pl ./WordNet-2.0-Exceptions ./smart_common_words.txt ./WordNet-2.0.exc.db
+    ```
+
+9. Evaluate rouge scores: 
+    ```
+    cd outputs
+    python eval.py
+    ```
+
+    The output should correspond to something similar to Table 1 of the SummaRuNNer paper (the last row).
+
+    ```
+    ---------------------------------------------
+    1 ROUGE-1 Average_R: 0.24484 (95%-conf.int. 0.24127 - 0.24854)
+    1 ROUGE-1 Average_P: 0.24440 (95%-conf.int. 0.24075 - 0.24827)
+    1 ROUGE-1 Average_F: 0.24361 (95%-conf.int. 0.24004 - 0.24732)
+    ---------------------------------------------
+    1 ROUGE-2 Average_R: 0.10173 (95%-conf.int. 0.09852 - 0.10494)
+    1 ROUGE-2 Average_P: 0.10192 (95%-conf.int. 0.09872 - 0.10513)
+    1 ROUGE-2 Average_F: 0.10144 (95%-conf.int. 0.09822 - 0.10464)
+    ---------------------------------------------
+    1 ROUGE-L Average_R: 0.12879 (95%-conf.int. 0.12597 - 0.13180)
+    1 ROUGE-L Average_P: 0.22632 (95%-conf.int. 0.22294 - 0.22988)
+    1 ROUGE-L Average_F: 0.15230 (95%-conf.int. 0.14940 - 0.15517)
+    ```
+
+    Run with the above setup, the results are 1-2 points lower than the reported values in the original paper.
+
+
+## Training
 
 ```
-pipenv install
-pipenv shell
+python main.py -device 0 -batch_size 32 -model RNN_RNN -seed 1 -save_dir checkpoints/my_trained_model_RNNRNN_seed1.pt
 ```
-
-### Usage  
-
-```shell
-# train
-python main.py -device 0 -batch_size 32 -model RNN_RNN -seed 1 -save_dir checkpoints/XXX.pt
-# test
-python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/XXX.pt
-# predict
-python main.py -batch_size 1 -predict -filename x.txt -load_dir checkpoints/RNN_RNN_seed_1.pt
+### Data format
+Training, validation, test data are json objects:
+```json
+{
+    doc: "the document text",
+    labels: "1\n0\n1\n1\n01\n...",
+    summaries: "the document summary"
+}
 ```
-## pretrained models
+The sentences of ``doc`` are separated by `\n`. The labels correspond to either keeping the corresponding sentence in (1) or out (0) for extractive summary training. The summaries also have sentences separated by `\n`.
 
-1. RNN_RNN(`checkpoints/RNN_RNN_seed_1.pt`)
-2. CNN_RNN(`checkpoints/CNN_RNN_seed_1.pt`)
-2. AttnRNN(`checkpoints/AttnRNN_seed_1.pt`)
+The training process also requires word embeddings and a vocabulary built from the embeddings.
 
-## Result
+### Labeler
+The heuristic algorithm for labeling sentences for extractive training is in ``extractive_labeler``. Although it seems like a faithful implementation of the paper's greedy algorithm, it does not always give the same result as hpzhao's labeled dataset.
 
-#### DailyMail(75 bytes)  
+When training on a new dataset, the sentences must all be labelled first.
 
-| model  | ROUGE-1   | ROUGE-2 | ROUGE-L |
-| ------ | :-----:   | :----:  | :----:  |
-|SummaRNNer(Nallapati)|26.2|10.8|14.4|
-|RNN-RNN|26.0|11.5|13.8|
-|CNN-RNN|25.8|11.3|13.8|
-|Hierarchical Attn Net|26.0|11.4|13.8|
-
-### Blog
-
-+ [用PyTorch搭建抽取式摘要系统](http://mp.weixin.qq.com/s/9X77MPcQOQPwZaOVIVfo9Q)
-
-### Download Data:  
-
-+ 百度云:[https://pan.baidu.com/s/1LV3iuuH1NjxuAJd0iz14lA](https://pan.baidu.com/s/1LV3iuuH1NjxuAJd0iz14lA) 密码:`ivzl`
-
-+ Google Driver:[data.tar.gz](https://drive.google.com/file/d/1JgsboIAs__r6XfCbkDWgmberXJw8FBWE/view?usp=sharing)
-
-+ Source Data:[Neural Summarization by Extracting Sentences and Words](https://docs.google.com/uc?id=0B0Obe9L1qtsnSXZEd0JCenIyejg&export=download)
-
-### Evaluation
-
-+ [Tools](https://github.com/hpzhao/nlp-metrics)
-
-### Acknowledge
-
-+ Thanks for @[AlJohri](https://github.com/AlJohri)'s and @[500swapnil](https://github.com/500swapnil)'s contribution
+### Word embeddings
+The data has 100-dimensional word2vec embeddings that are already trained on the CNN/Daily Mail corpus. If the embeddings change you might need to rebuild the vocabulary (``preprocess.py``).
