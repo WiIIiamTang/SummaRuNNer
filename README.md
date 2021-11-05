@@ -30,7 +30,7 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
     Results of predictions are stored in ``outputs/hyp`` while the "gold-standard" summaries are stored in ``outputs/ref``.
 
 ### Install rouge
-5. Point pyrouge to the rouge folder: 
+5. Point pyrouge to the rouge folder (in ``outputs``): 
     ```
     pyrouge_set_rouge_path absolute/path/to/ROUGE-1.5.5/
     ```
@@ -71,20 +71,20 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
 
     ```
     ---------------------------------------------
-    1 ROUGE-1 Average_R: 0.24484 (95%-conf.int. 0.24127 - 0.24854)
-    1 ROUGE-1 Average_P: 0.24440 (95%-conf.int. 0.24075 - 0.24827)
-    1 ROUGE-1 Average_F: 0.24361 (95%-conf.int. 0.24004 - 0.24732)
+    1 ROUGE-1 Average_R: 0.26252 (95%-conf.int. 0.25844 - 0.26658)
+    1 ROUGE-1 Average_P: 0.26497 (95%-conf.int. 0.26087 - 0.26889)
+    1 ROUGE-1 Average_F: 0.26268 (95%-conf.int. 0.25861 - 0.26666)
     ---------------------------------------------
-    1 ROUGE-2 Average_R: 0.10173 (95%-conf.int. 0.09852 - 0.10494)
-    1 ROUGE-2 Average_P: 0.10192 (95%-conf.int. 0.09872 - 0.10513)
-    1 ROUGE-2 Average_F: 0.10144 (95%-conf.int. 0.09822 - 0.10464)
+    1 ROUGE-2 Average_R: 0.11812 (95%-conf.int. 0.11451 - 0.12158)
+    1 ROUGE-2 Average_P: 0.11944 (95%-conf.int. 0.11583 - 0.12298)
+    1 ROUGE-2 Average_F: 0.11835 (95%-conf.int. 0.11476 - 0.12175)
     ---------------------------------------------
-    1 ROUGE-L Average_R: 0.12879 (95%-conf.int. 0.12597 - 0.13180)
-    1 ROUGE-L Average_P: 0.22632 (95%-conf.int. 0.22294 - 0.22988)
-    1 ROUGE-L Average_F: 0.15230 (95%-conf.int. 0.14940 - 0.15517)
+    1 ROUGE-L Average_R: 0.14039 (95%-conf.int. 0.13719 - 0.14368)
+    1 ROUGE-L Average_P: 0.24687 (95%-conf.int. 0.24291 - 0.25078)
+    1 ROUGE-L Average_F: 0.16613 (95%-conf.int. 0.16295 - 0.16942)
     ```
 
-    Run with the above setup, the results are 1-2 points lower than the reported values in the original paper.
+    Run with the above setup, the results are similar to the reported values of the original paper.
 
 
 ## Training
