@@ -94,7 +94,7 @@ python main.py -device 0 -batch_size 32 -model RNN_RNN -seed 1 -save_dir checkpo
 ```
 ### Data format
 Training, validation, test data are json objects:
-```json
+```
 {
     doc: "the document text",
     labels: "1\n0\n1\n1\n01\n...",
