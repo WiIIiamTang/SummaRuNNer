@@ -105,10 +105,16 @@ The sentences of ``doc`` are separated by `\n`. The labels correspond to either 
 
 The training process also requires word embeddings and a vocabulary built from the embeddings.
 
-### Labeler
+### Word embeddings
+The data has 100-dimensional word2vec embeddings that are already trained on the CNN/Daily Mail corpus. If the embeddings change you might need to rebuild the vocabulary (``preprocess.py``).
+
+
+## Labeler
 The heuristic algorithm for labeling sentences for extractive training is in ``extractive_labeler``. Although it seems like a faithful implementation of the paper's greedy algorithm, it does not always give the same result as hpzhao's labeled dataset.
 
 When training on a new dataset, the sentences must all be labelled first.
 
-### Word embeddings
-The data has 100-dimensional word2vec embeddings that are already trained on the CNN/Daily Mail corpus. If the embeddings change you might need to rebuild the vocabulary (``preprocess.py``).
+### Usage
+WIP
+
+
