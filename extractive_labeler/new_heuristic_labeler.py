@@ -3,21 +3,27 @@ import json
 import argparse
 from rouge import Rouge
 import nltk
+import sys
+
+sys.setrecursionlimit(9999*9999)
 
 def label_data(data: dict, rouge: Rouge) -> dict:
     doc = data['doc']
     summaries = data['summaries']
-    sents = [sent.strip() for sent in doc.split('\n')]
+    sents = [sent.strip().strip('\n') for sent in doc.split('\n') if sent not in (' ', '.', '')]
+    sents = [s for s in sents if s]
     labels = [0] * len(sents)
     rouge_group = []
     score_mid, max_idx = 0, 0
 
     for i,sent_i in enumerate(sents):
         try:
-            score = rouge.get_scores(sent_i,summaries.replace('\n', '.'))[0]['rouge-1']['f']
+            score = rouge.get_scores(sents[i],summaries.replace('\n', '.'))[0]['rouge-1']['f']
         except Exception as e:
+            print(i)
             print('sent_i:',sent_i)
             print('sents:',sents)
+            print(sents[max(0, i-1)])
             print('summarize:',summaries)
             print(e)
             continue
@@ -25,20 +31,24 @@ def label_data(data: dict, rouge: Rouge) -> dict:
         if score > score_mid:
             score_mid = score
             max_idx = i
-        rouge_group.append(sents[max_idx])
-        labels[max_idx] = 1
+    rouge_group.append(sents[max_idx])
+    labels[max_idx] = 1
 
-        score_max = score_mid
-        for j,sent_j in enumerate(sents):
-            if j == max_idx:
-                continue
+    score_max = score_mid
+    for j,sent_j in enumerate(sents):
+        if j == max_idx:
+            continue
+        try:
             score = rouge.get_scores(' '.join(rouge_group+[sent_j]),summaries.replace('\n', '.'))[0]['rouge-1']['f']
-            if score > score_max:
-                labels[j] = 1
-                rouge_group.append(sent_j)
-                score_max = score
+        except Exception as e:
+            print(e)
+        if score > score_max:
+            labels[j] = 1
+            rouge_group.append(sent_j)
+            score_max = score
         
-        data['labels'] = '\n'.join([str(x) for x in labels])
+    data['labels'] = '\n'.join([str(x) for x in labels])
+    data['doc'] = '\n'.join(sents)
 
     return data
 

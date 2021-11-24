@@ -1,5 +1,6 @@
 import argparse
 import json
+from tqdm import tqdm
 
 def main():
     parser = argparse.ArgumentParser()
@@ -13,10 +14,10 @@ def main():
     
     results = []
 
-    for d in data:
+    for d in tqdm(data):
         results.append({
-            'doc': d.get('content'),
-            'summaries': d.get('summary')
+            'doc': d.get('content').replace('\n', '').replace('..', '').replace('...', '').replace('.', '\n').lower().strip('\n'),
+            'summaries': d.get('summary').replace('\n', '').replace('.', '\n').strip('\n').lower()
         })
     
     with open(args.o, 'w', encoding='utf-8') as f:
