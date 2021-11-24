@@ -14,7 +14,7 @@ def label_data(data: dict, rouge: Rouge) -> dict:
 
     for i,sent_i in enumerate(sents):
         try:
-            score = rouge.get_scores(sent_i,summaries.replace('\n', '. '))[0]['rouge-1']['f']
+            score = rouge.get_scores(sent_i,summaries.replace('\n', '.'))[0]['rouge-1']['f']
         except Exception as e:
             print('sent_i:',sent_i)
             print('sents:',sents)
@@ -32,7 +32,7 @@ def label_data(data: dict, rouge: Rouge) -> dict:
         for j,sent_j in enumerate(sents):
             if j == max_idx:
                 continue
-            score = rouge.get_scores(' '.join(rouge_group+[sent_j]),summaries.replace('\n', '. '))[0]['rouge-1']['f']
+            score = rouge.get_scores(' '.join(rouge_group+[sent_j]),summaries.replace('\n', '.'))[0]['rouge-1']['f']
             if score > score_max:
                 labels[j] = 1
                 rouge_group.append(sent_j)
@@ -49,16 +49,17 @@ def main():
 
     args = parser.parse_args()
 
-    with open(args.i, 'r') as f:
+    with open(args.i, 'r', encoding='utf-8') as f:
         data = [json.loads(l) for l in f.readlines()]
     
     r = Rouge()
 
     result = [label_data(d, r) for d in tqdm(data)]
 
-    with open(args.o, 'w') as f:
+    with open(args.o, 'w', encoding='utf-8') as f:
         for d in result:
             json.dump(d, f)
+            f.write('\n')
 
 if __name__ == '__main__':
     main()

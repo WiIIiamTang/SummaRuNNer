@@ -115,6 +115,15 @@ The heuristic algorithm for labeling sentences for extractive training is in ``e
 When training on a new dataset, the sentences must all be labelled first.
 
 ### Usage
-WIP
+```
+usage: new_heuristic_labeler.py [-h] -i I -o O
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -i I        Path to json file of documents to label
+  -o O        The path to write the output to
+```
+
+The script accepts an input that has one json object per line. Each json object should have a `"doc"` and `"summaries"` key. The sentences must be separated by new lines (`\n`). See the example input and output in ``extractive_labeler``.
 
 
