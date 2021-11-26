@@ -131,4 +131,20 @@ The script accepts an input that has one json object per line. Each json object 
 - Run the labeler
 - Name the output `test.json`, `train.json`, or `val.json`
 
+## New datasets to test on
+
+### Reddit TLDR 17
+
+```
+python process_reddit_dataset.py -i example_datasets/example_redditTLDR.json -o data/example_redditTLDR_out.json
+
+python extractive_labeler/new_heuristic_labeler -i data/example_redditTLDR_out.json data/reddit_labelled.json
+
+mv data/test.json data/test.bak.json
+
+mv data/reddit_labelled.json data/test.json
+
+python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt
+```
+
 
