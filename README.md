@@ -7,10 +7,10 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
 ### Setup
 1. Use Python 3.6
 
-2. ``pipenv install``
+2. ``python3 -m pipenv install``
     - One of the requirements is PyTorch 0.3.1. This does not seem to work on Windows, but seems to work on Linux distributions (and maybe Mac). See https://pytorch.org/get-started/previous-versions/
 
-3. ``pipenv shell``
+3. ``python3 -m pipenv shell``
     You should see something like
     ``((SummaRuNNer) ) user@PC:/mnt/c/Users/user$``
     at the prompt
@@ -35,11 +35,11 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
     pyrouge_set_rouge_path absolute/path/to/ROUGE-1.5.5/
     ```
 
-6. 
+6.  If you need Perl,
     ```
     sudo apt-get install libxml-parser-perl
     ```
-    Or the equivalent on Mac (to install Perl).
+    Or the equivalent on other OS.
 
 
     You might also need to install pyrouge/rouge:
@@ -115,6 +115,20 @@ The heuristic algorithm for labeling sentences for extractive training is in ``e
 When training on a new dataset, the sentences must all be labelled first.
 
 ### Usage
-WIP
+```
+usage: new_heuristic_labeler.py [-h] -i I -o O
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -i I        Path to json file of documents to label
+  -o O        The path to write the output to
+```
+
+The script accepts an input that has one json object per line. Each json object should have a `"doc"` and `"summaries"` key. The sentences must be separated by new lines (`\n`). See the example input and output in ``extractive_labeler``.
+
+### Setting up new datasets for testing or training
+- Run some preprocessing script to get the correct format with "doc" and "summaries" (such as ``utils/process_reddit_dataset.py``)
+- Run the labeler
+- Name the output `test.json`, `train.json`, or `val.json`
 
 
