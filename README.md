@@ -133,7 +133,13 @@ The script accepts an input that has one json object per line. Each json object 
 
 ## New datasets to test on
 
-### Reddit TLDR 17
+### Reddit
+For ready-to-test datasets:
+https://github.com/WiIIiamTang/summarunner-reddit-datasets
+
+Or, process them manually:
+
+#### TLDR 17 preprocessing
 
 ```
 python utils/process_reddit_dataset.py -i example_datasets/example_redditTLDR.json -o data/example_redditTLDR_out.json
