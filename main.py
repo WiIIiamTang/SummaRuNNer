@@ -45,7 +45,8 @@ parser.add_argument('-test_dir',type=str,default='data/test.json')
 parser.add_argument('-ref',type=str,default='outputs/ref')
 parser.add_argument('-hyp',type=str,default='outputs/hyp')
 parser.add_argument('-filename',type=str,default='x.txt') # TextFile to be summarized
-parser.add_argument('-topk',type=int,default=2)
+parser.add_argument('-topk',type=int,default=10)
+parser.add_argument('-b', type=int, help='byte cutoff', default=0)
 # device
 parser.add_argument('-device',type=int)
 # option
@@ -202,7 +203,17 @@ def test():
             topk_indices = prob.topk(topk)[1].cpu().data.numpy()
             topk_indices.sort()
             doc = batch['doc'][doc_id].split('\n')[:doc_len]
-            hyp = [doc[index] for index in topk_indices]
+            
+            hyp = []
+            limit = args.b if args.b else 99999999999
+            for index in topk_indices:
+                hyp.append(doc[index])
+                limit -= len(doc[index])
+                if limit <= 0:
+                    break
+
+            #hyp = [doc[index] for index in topk_indices]
+            
             ref = summaries[doc_id]
             with open(os.path.join(args.ref,str(file_id)+'.txt'), 'w') as f:
                 f.write(ref)
