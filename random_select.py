@@ -22,10 +22,13 @@ def main():
         all_sentences = hypo
         hypo = []
         for _ in range(args.max_sent):
-            select = all_sentences.pop(random.randint(0, len(all_sentences)-1))
+            if len(all_sentences) > 1:
+                select = all_sentences.pop(random.randint(0, len(all_sentences)-1))
+            else:
+                select = all_sentences.pop(0)
             hypo.append(select)
             limit -= len(select)
-            if limit <= 0:
+            if limit <= 0 or not all_sentences:
                 break
         
         hyp[i] = hypo
