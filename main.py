@@ -201,16 +201,23 @@ def test():
             prob = probs[start:stop]
             topk = min(args.topk,doc_len)
             topk_indices = prob.topk(topk)[1].cpu().data.numpy()
-            topk_indices.sort()
+            #topk_indices.sort()
             doc = batch['doc'][doc_id].split('\n')[:doc_len]
             
-            hyp = []
-            limit = args.b if args.b else 99999999999
-            for index in topk_indices:
-                hyp.append(doc[index])
-                limit -= len(doc[index])
-                if limit <= 0:
-                    break
+            if not args.b:
+                topk_indices.sort()
+                hyp = [doc[index] for index in topk_indices]
+            else:
+                hyp = []
+                limit = args.b if args.b else 99999999999
+                for index in topk_indices:
+                    hyp.append((doc[index], index))
+                    limit -= len(doc[index].encode('utf-8'))
+                    if limit < 0:
+                        break
+                
+                hyp.sort(key=lambda x: x[1])
+                hyp = [x[0] for x in hyp]
 
             #hyp = [doc[index] for index in topk_indices]
             
