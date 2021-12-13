@@ -27,7 +27,7 @@ def main():
             else:
                 select = all_sentences.pop(0)
             hypo.append(select)
-            limit -= len(select)
+            limit -= len(select.encode('utf-8'))
             if limit <= 0 or not all_sentences:
                 break
         
