@@ -45,7 +45,7 @@ parser.add_argument('-test_dir',type=str,default='data/test.json')
 parser.add_argument('-ref',type=str,default='outputs/ref')
 parser.add_argument('-hyp',type=str,default='outputs/hyp')
 parser.add_argument('-filename',type=str,default='x.txt') # TextFile to be summarized
-parser.add_argument('-topk',type=int,default=10)
+parser.add_argument('-topk',type=int,default=15)
 parser.add_argument('-b', type=int, help='byte cutoff', default=0)
 # device
 parser.add_argument('-device',type=int)
