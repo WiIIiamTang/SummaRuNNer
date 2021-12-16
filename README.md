@@ -148,5 +148,18 @@ python extractive_labeler/new_heuristic_labeler.py -i data/example_redditTLDR_ou
 
 python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt -test_dir data/reddit_labelled.json
 ```
+### Books
 
+Run the files as explained in https://github.com/manestay/novel-chapter-dataset. Once the pks files are scraped, put those files in example_datasets folder. 
 
+From here you can run the script extract_summaries.py in utils.
+This file can be edited if the location of the pks is not in the example_datasets.
+
+The output of this script should produce the correct test.json test dataset file needed for SummaRuNNer.
+
+From here we can run SummaRuNNer on the test.json file.
+
+The folder book_experiments contains the scripts used to run the experiments presented in our paper.
+The folder outputs/book_data/scripts contains the scripts used to run the ROUGE scores once the data from book_experiments script is received.
+
+Finally the scores are stored and kept in the folder: outputs/book_data/scores.
