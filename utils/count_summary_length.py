@@ -17,7 +17,7 @@ with open("../data/test.json", "r") as fp:
 
         total_document_length_chars += len(entry["doc"])
         total_summary_length_chars += len(entry["summaries"])
-print("NUM books: " + str(total_books))
+
 print("Average summary length: " + str(total_summary_length / total_books))
 print("Average doument length: " + str(total_document_length / total_books))
 print("Average summary length chars: " + str(total_summary_length_chars / total_books))
