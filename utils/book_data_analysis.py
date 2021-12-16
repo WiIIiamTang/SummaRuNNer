@@ -25,7 +25,7 @@ novelguide = pickle.load(open(os.path.join(PICKLE_LOCATION, "summaries_novelguid
 pinkmonkey = pickle.load(open(os.path.join(PICKLE_LOCATION, "summaries_pinkmonkey_all.pk"), "rb"))
 
 list_summaries = [bookwolf, cliffsnotes, gradesaver, novelguide, pinkmonkey]
-string_summaries = ["Bookworld", "Cliffsnotes", "Gradesaver", "Novelguide", "Pinkmonkey"]
+string_summaries = ["Bookwolf", "Cliffsnotes", "Gradesaver", "Novelguide", "Pinkmonkey"]
 
 
 def get_book_data():
@@ -100,6 +100,7 @@ def get_summary_data():
     return df
 
 def main():
+
     all_book_data, total_summaries = get_book_data()
 
     print("ALL BOOK DATA\n\n")

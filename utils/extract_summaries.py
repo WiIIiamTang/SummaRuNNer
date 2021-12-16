@@ -86,6 +86,10 @@ def extract_one_summary(chapter_summary):
 
     # We assume chapters is a string of form either: Chapter x or Chapter x - y , where x and y are both ints
     chapter_list = chapters.split(" ")
+    temp_array = summary_string.split(".")
+
+    summary_string = ".\n".join(temp_array)
+
     chapter_list = [int(c) for c in chapter_list if c.isdigit()]
     if len(chapter_list) > 1:
         chapter_list = list(range(chapter_list[0], chapter_list[1] + 1))
@@ -112,7 +116,17 @@ def extract_all_summaries(summary_soure, data_list_json):
             actual_chapter = ""
             for chapter in list_chapters:
                 try:
-                    actual_chapter += "\n".join(raw_texts_list[book_title]["Chapter " + str(chapter)])
+                    # We should make sure our string contains the \n character in between every sentence.
+
+                    # Get chapter in form of list
+                    chapter_list = raw_texts_list[book_title]["Chapter " + str(chapter)]
+                    chapter_string = " ".join(chapter_list)
+                    chapter_list = chapter_string.split(".")
+                    chapter_list = [x for x in chapter_list if x != ""]
+                    actual_chapter += ".\n".join(chapter_list)
+
+                    # actual_chapter += "\n".join(raw_texts_list[book_title]["Chapter " + str(chapter)])
+                    #print(actual_chapter)
                 except KeyError:
                     print("h")
             if actual_chapter != "":
@@ -125,7 +139,11 @@ def extract_all_summaries(summary_soure, data_list_json):
 
 
 def main():
-
+    # with open("../data/test.json", "r") as fp:
+    #     for line in fp:
+    #         x = json.loads(line)
+    #         print(x)
+    # return
     for source in source_summaries:
         extract_all_summaries(source, output_jsons)
 
