@@ -1,0 +1,14 @@
+python ../../eval_config.py -b 75 -ref ../data/random/ref_rand_75/ -hyp ../data/random/hyp_rand_75/
+---------------------------------------------
+1 ROUGE-1 Average_R: 0.09382 (95%-conf.int. 0.09136 - 0.09620)
+1 ROUGE-1 Average_P: 0.09222 (95%-conf.int. 0.08980 - 0.09456)
+1 ROUGE-1 Average_F: 0.09251 (95%-conf.int. 0.09015 - 0.09481)
+---------------------------------------------
+1 ROUGE-2 Average_R: 0.00432 (95%-conf.int. 0.00357 - 0.00513)
+1 ROUGE-2 Average_P: 0.00425 (95%-conf.int. 0.00354 - 0.00505)
+1 ROUGE-2 Average_F: 0.00427 (95%-conf.int. 0.00354 - 0.00508)
+---------------------------------------------
+1 ROUGE-L Average_R: 0.06823 (95%-conf.int. 0.06636 - 0.07015)
+1 ROUGE-L Average_P: 0.08199 (95%-conf.int. 0.07993 - 0.08406)
+1 ROUGE-L Average_F: 0.07187 (95%-conf.int. 0.06995 - 0.07377)
+
