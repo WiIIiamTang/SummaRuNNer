@@ -186,7 +186,7 @@ Evalute ROUGE metrics by running ```outputs/eval.py [-b n]```
 Where ``-b`` is the byte limit of the summaries. The true summaries must be in ``ref/``, and the model summaries must be in ``ref/``. Of course, before running the rouge script,  you have to generate the summaries for each dataset. Follow these steps to generate summaries:
 
 #### RNN
-For SummaRuNNer models, run ```main.py -test -batch_size 1 -model RNN_RNN -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
+For SummaRuNNer models, run ```main.py -test -batch_size 1 -device 0 -model RNN_RNN -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
 
 Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is. For example, for 75 byte length limit, use ``-b 75``. For full length, **do not use the bytes setting** and use ``-topk`` instead. We used the best ``topk`` based on the validation set. Topk details:
 - For all **Reddit** datasets, set ``topk`` to 3 when running  a full length test.
