@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Porporino
+    given-names: Anthony
+  - family-names: Tang
+    given-names: William
+  - family-names: Latiok
+    given-names: Jenna
+   
+title: "SummaRuNNer and out-of-domain extractive text summarization"
+version: 1.0
+date-released: 2021-12-16
