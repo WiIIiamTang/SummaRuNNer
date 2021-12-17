@@ -159,6 +159,8 @@ For preprocessing, note that we labeled these datasets but ended up not using th
 
 **TLDR preprocessing**: **If you are using the original Webis TLDR 17 data**, then run ``utils/process_reddit_dataset.py`` on the json file. Then run the labeler on the output, as described in the [labeling](#labeler) section. You can test this on the example provided in ``example_datasets``. We recommend you just use the preprocessed test and validation sets in the link above.
 
+---
+
 ### Books
 
 Run the files as explained in https://github.com/manestay/novel-chapter-dataset. Once the pks files are scraped, put those files in example_datasets folder. 
@@ -175,20 +177,30 @@ The folder outputs/book_data/scripts contains the scripts used to run the ROUGE 
 
 Finally the scores are stored and kept in the folder: outputs/book_data/scores. 
 
+---
 
 ### Running our tests
 
-For each dataset, run ```main.py -test -batch_size 1 -model RNN_RNN -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
-
-Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is. For example, for 75 byte length limit, use ``-b 75``. For full length, ``-topk`` is used. We used the best ``topk`` based on the validation set. For all **Reddit** datasets, set ``topk`` to 3 when running  a full length test.
-
-For **LEAD-3**, run ``lead3.py`` on each of the datasets.
-
-For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences for this as well. Set ``topk`` to 5 when testing on the Reddit Stories dataset, and 3 when testing on the RedditTLDR dataset.
-
 Evalute ROUGE metrics by running ```outputs/eval.py [-b n]```
 
-Where ``-b`` is the byte limit of the summaries.
+Where ``-b`` is the byte limit of the summaries. The true summaries must be in ``ref/``, and the model summaries must be in ``ref/``. To generate the summaries for each dataset, follow these steps:
+
+#### RNN
+For each dataset, run ```main.py -test -batch_size 1 -model RNN_RNN -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
+
+Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is. For example, for 75 byte length limit, use ``-b 75``. For full length, ``-topk`` is used. We used the best ``topk`` based on the validation set. Topk details:
+- For all **Reddit** datasets, set ``topk`` to 3 when running  a full length test.
+
+#### Baseline-LEAD-3
+For **LEAD-3**, run ``lead3.py`` on each of the datasets.
+
+#### Baseline-Random
+For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences for this as well. 
+- Set ``topk`` to 5 when testing on the Reddit Stories dataset, and 3 when testing on the RedditTLDR dataset.
+
+
+
+---
 
 ### Running the training
 
