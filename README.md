@@ -163,7 +163,7 @@ For preprocessing, note that we labeled these datasets but ended up not using th
 
 Evalute ROUGE metrics by running ```outputs/eval.py [-b n]```. 
 
-Where ``-b`` is the byte limit of the summaries. The true summaries must be in ``ref/``, and the model summaries must be in ``ref/``. Of course, before running the rouge script,  you have to generate the summaries for each dataset. The full output used for the report is in ``outputs/reddit_test_data.txt``. To generate them yourself, follow these steps to generate summaries:
+Where ``-b`` is the byte limit of the summaries. The true summaries must be in ``ref/``, and the model summaries must be in ``hyp/``. Of course, before running the rouge script,  you have to generate the summaries for each dataset. The full output used for the report is in ``outputs/reddit_test_data.txt``. To generate them yourself, follow these steps to generate summaries:
 
 #### RNN
 For SummaRuNNer models, run ```main.py -test -batch_size 1 -device 0 -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
