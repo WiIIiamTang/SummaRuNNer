@@ -175,7 +175,7 @@ Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number 
 For **LEAD-3**, run ``lead3.py`` on each of the datasets.
 
 #### Baseline-Random
-For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences (``max_sent``) for this as well.
+For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences (``max_sent``) for this as well dpending on if you're testing with byte limit or full length.
 - Set ``max_sent`` to 5 when testing on the Reddit Stories dataset, and 3 when testing on the RedditTLDR dataset.
 
 ---
