@@ -1,33 +1,44 @@
 # PyTorch SummaRuNNer
-A fork of hpzhao's work, which includes [no-execution's extractive labeler](https://github.com/no-execution/Summa_label).
+A modified version of hpzhao's work, which also includes [no-execution's extractive labeler](https://github.com/no-execution/Summa_label).
 
-## Test to see if installation is correct
-Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data](https://drive.google.com/file/d/1JgsboIAs__r6XfCbkDWgmberXJw8FBWE/view?usp=sharing) and putting it in the ``data`` folder,
+This repository is meant for experiments on new data. We provide tools to train and test on three new datasets.
 
-### Setup
-1. Use Python 3.6
+To reproduce or verify results reported in our paper, [read this section](#new-datasets-to-test-on).
 
-2. ``python3 -m pipenv install``
-    - One of the requirements is PyTorch 0.3.1. This does not seem to work on Windows, but seems to work on Linux distributions (and maybe Mac). See https://pytorch.org/get-started/previous-versions/
+
+
+## Setup
+After [downloading the labeled DailyMail data](https://drive.google.com/file/d/1JgsboIAs__r6XfCbkDWgmberXJw8FBWE/view?usp=sharing) and putting it in the ``data`` folder follow the steps:
+
+### Requirements
+1. Use Python 3.6 (it might work on other versions, but this was not tested)
+
+2. 
+```
+pip3 install pipenv
+python3 -m pipenv install
+```
+    
+   - One of the requirements is PyTorch 0.3.1. This does not seem to work on Windows, but works on Linux distributions (and maybe Mac). See https://pytorch.org/get-started/previous-versions/
 
 3. ``python3 -m pipenv shell``
     You should see something like
     ``((SummaRuNNer) ) user@PC:/mnt/c/Users/user$``
     at the prompt
 
-### Run SummaRuNNer
+### Run SummaRuNNer tests
 4. Test without gpu: 
     ```
-    python main.py -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt
+    python main.py -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt -topk 2
     ```
 
     Test with gpu: 
 
     ```
-    python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt
+    python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt -topk 2
     ```
 
-    Results of predictions are stored in ``outputs/hyp`` while the "gold-standard" summaries are stored in ``outputs/ref``.
+    Results of predictions are stored in ``outputs/hyp`` while the "gold-standard" summaries are stored in ``outputs/ref``. The tests are done using the pretrained model provided by hpzhao.
 
 ### Install rouge
 5. Point pyrouge to the rouge folder (in ``outputs``): 
@@ -35,11 +46,10 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
     pyrouge_set_rouge_path absolute/path/to/ROUGE-1.5.5/
     ```
 
-6.  If you need Perl,
+6.  **If you need Perl**,
     ```
     sudo apt-get install libxml-parser-perl
     ```
-    Or the equivalent on other OS.
 
 
     You might also need to install pyrouge/rouge:
@@ -47,11 +57,11 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
     pip install pyrouge rouge
     ```
 
-7. 
+7.  Install XML::DOM (Perl package):
     ```
     cpan install XML::DOM
     ``` 
-    to install XML::DOM (Perl package).
+    
 
 8. Go into ``outputs/ROUGE-1.5.5/data``, then
 
@@ -90,7 +100,7 @@ Tested on Ubuntu 18.04 (WSL2) without CUDA.  After [downloading the sample data]
 ## Training
 
 ```
-python main.py -device 0 -batch_size 32 -model RNN_RNN -seed 1 -save_dir checkpoints/my_trained_model_RNNRNN_seed1.pt
+python main.py -device 0 -batch_size 16 -model RNN_RNN -seed 1 -save_dir checkpoints/my_trained_model_RNNRNN_seed1.pt
 ```
 ### Data format
 Training, validation, test data are json objects:
@@ -112,7 +122,7 @@ The data has 100-dimensional word2vec embeddings that are already trained on the
 ## Labeler
 The heuristic algorithm for labeling sentences for extractive training is in ``extractive_labeler``. Although it seems like a faithful implementation of the paper's greedy algorithm, it does not always give the same result as hpzhao's labeled dataset.
 
-When training on a new dataset, the sentences must all be labelled first.
+When training on a new dataset, the sentences must all be labelled first. In the case of the DailyMail dataset provided here, it is already labeled so there is no need to run this.
 
 ### Usage
 ```
@@ -131,23 +141,24 @@ The script accepts an input that has one json object per line. Each json object 
 - Run the labeler
 - Name the output `test.json`, `train.json`, or `val.json`
 
+
 ## New datasets to test on
 
+**This section details the reproduction of results reported in our paper.**
+
+
 ### Reddit
-For ready-to-test datasets:
-https://github.com/WiIIiamTang/summarunner-reddit-datasets
+- Reddit stories (raw): https://github.com/WiIIiamTang/summarunner-reddit-datasets
 
-Or, process them manually:
+- RedditTLDR (already preprocessed): https://drive.google.com/drive/folders/1ytMH0dbmJb6HuTE9XmjPfY9CuaVOVl6a?usp=sharing
 
-#### TLDR 17 preprocessing
+For preprocessing, note that we labeled these datasets but ended up not using these datasets for training.
 
-```
-python utils/process_reddit_dataset.py -i example_datasets/example_redditTLDR.json -o data/example_redditTLDR_out.json
+ **Reddit Stories preprocessing**: Run ``utils/preprocess_reddit_stories.py``. You need to specify the correct directories for the **abstractive** summaries and labels. You must run the preprocess script **two times**. One time to obtain the test data, and another time to obtain the validation data.
 
-python extractive_labeler/new_heuristic_labeler.py -i data/example_redditTLDR_out.json -o data/reddit_labelled.json
 
-python main.py -device 0 -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt -test_dir data/reddit_labelled.json
-```
+**TLDR preprocessing**: **If you are using the original Webis TLDR 17 data**, then run ``utils/process_reddit_dataset.py`` on the json file. Then run the labeler on the output, as described in the [labeling](#labeler) section. You can test this on the example provided in ``example_datasets``. We recommend you just use the preprocessed test and validation sets in the link above.
+
 ### Books
 
 Run the files as explained in https://github.com/manestay/novel-chapter-dataset. Once the pks files are scraped, put those files in example_datasets folder. 
@@ -162,4 +173,32 @@ From here we can run SummaRuNNer on the test.json file.
 The folder book_experiments contains the scripts used to run the experiments presented in our paper.
 The folder outputs/book_data/scripts contains the scripts used to run the ROUGE scores once the data from book_experiments script is received.
 
-Finally the scores are stored and kept in the folder: outputs/book_data/scores.
+Finally the scores are stored and kept in the folder: outputs/book_data/scores. 
+
+
+### Running our tests
+
+For each dataset, run ```main.py -test -batch_size 1 -model RNN_RNN -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
+
+Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is.
+
+For **LEAD-3**, run ``lead3.py`` on each of the datasets.
+
+For **Random**, run ``random_select.py`` on each of the datasets.
+
+Evalute ROUGE metrics by running ```outputs/eval.py [-b n]```
+
+Where ``-b`` is the byte limit of the summaries.
+
+### Running the training
+
+SummaRuNNer trained with GloVe embeddings: https://drive.google.com/drive/folders/1ltTkUX01q713BcToCZl1K6y-JOEaKoBQ?usp=sharing
+
+You must take the **100 dimensional embeddings** (``word2id100.json``, ``embedding100.npz``, ``RNN_RNN_seed_1_GloVe100.pt``).
+
+To train yourself, download [these GloVe embeddings](https://nlp.stanford.edu/data/glove.6B.zip), and run ``preprocess.py -build_vocab`` to build the vocabulary. You need to have the embedding npz file and word2id json file before starting to train. Train with the command:
+
+```
+python main.py -train -device 0 -save_dir checkpoints/glovemodel.pt -embedding xxx -word2id xxx -batch_size 16 -seed 1
+```
+Set the embedding and word2id to the files you downloaded/created earlier. At the end of training, you will get a pretrained model in the ``checkpoints`` folder to use for testing (above).
