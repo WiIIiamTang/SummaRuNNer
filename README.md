@@ -208,7 +208,7 @@ SummaRuNNer trained with GloVe embeddings: https://drive.google.com/drive/folder
 
 You must take the **100 dimensional embeddings** (``word2id100.json``, ``embedding100.npz``, ``RNN_RNN_seed_1_GloVe100.pt``).
 
-To train yourself, download [these GloVe embeddings](https://nlp.stanford.edu/data/glove.6B.zip), and run ``preprocess.py -build_vocab`` to build the vocabulary. You need to have the embedding npz file and word2id json file before starting to train. Train with the command:
+To train yourself, download [these GloVe embeddings](https://nlp.stanford.edu/data/glove.6B.zip), and run ``preprocess.py -build_vocab`` on ``glove.6B.100d.txt`` to build the vocabulary. You need to have the embedding npz file and word2id json file before starting to train. Train with the command:
 
 ```
 python main.py -train -device 0 -save_dir checkpoints/glovemodel.pt -embedding xxx -word2id xxx -batch_size 16 -seed 1
