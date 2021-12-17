@@ -213,4 +213,4 @@ To train yourself, download [these GloVe embeddings](https://nlp.stanford.edu/da
 ```
 python main.py -train -device 0 -save_dir checkpoints/glovemodel.pt -embedding xxx -word2id xxx -batch_size 16 -seed 1
 ```
-Set the embedding and word2id to the files you downloaded/created earlier. At the end of training, you will get a pretrained model in the ``checkpoints`` folder to use for testing (above).
+Set the embedding and word2id to the files you downloaded/created earlier. At the end of training, you will get a pretrained model in the ``checkpoints`` folder to use for testing (above). When testing, you will need to specify again the new embeddings, word2id file and checkpoint.
