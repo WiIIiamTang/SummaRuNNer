@@ -180,11 +180,11 @@ Finally the scores are stored and kept in the folder: outputs/book_data/scores.
 
 For each dataset, run ```main.py -test -batch_size 1 -model RNN_RNN -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
 
-Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is.
+Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is. For example, for 75 byte length limit, use ``-b 75``. For full length, ``-topk`` is used. We used the best ``topk`` based on the validation set. For all **Reddit** datasets, set ``topk`` to 3 when running  a full length test.
 
 For **LEAD-3**, run ``lead3.py`` on each of the datasets.
 
-For **Random**, run ``random_select.py`` on each of the datasets.
+For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences for this as well. Set ``topk`` to 5 when testing on the Reddit Stories dataset, and 3 when testing on the RedditTLDR dataset.
 
 Evalute ROUGE metrics by running ```outputs/eval.py [-b n]```
 
