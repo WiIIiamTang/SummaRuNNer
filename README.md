@@ -7,10 +7,10 @@ To reproduce or verify results reported in our paper, [read this section](#new-d
 
 
 
-## Setup
+# Setup
 After [downloading the labeled DailyMail data](https://drive.google.com/file/d/1JgsboIAs__r6XfCbkDWgmberXJw8FBWE/view?usp=sharing) and putting it in the ``data`` folder follow the steps:
 
-### Requirements
+## Requirements
 1. Use Python 3.6 (it might work on other versions, but this was not tested)
 
 2. 
@@ -26,7 +26,7 @@ python3 -m pipenv install
     ``((SummaRuNNer) ) user@PC:/mnt/c/Users/user$``
     at the prompt
 
-### Run SummaRuNNer tests
+## Run SummaRuNNer tests
 4. Test without gpu: 
     ```
     python main.py -batch_size 1 -test -load_dir checkpoints/RNN_RNN_seed_1.pt -topk 2
@@ -40,7 +40,7 @@ python3 -m pipenv install
 
     Results of predictions are stored in ``outputs/hyp`` while the "gold-standard" summaries are stored in ``outputs/ref``. The tests are done using the pretrained model provided by hpzhao.
 
-### Install rouge
+## Install rouge
 5. Point pyrouge to the rouge folder (in ``outputs``): 
     ```
     pyrouge_set_rouge_path absolute/path/to/ROUGE-1.5.5/
@@ -71,6 +71,8 @@ python3 -m pipenv install
     ./WordNet-2.0-Exceptions/buildExeptionDB.pl ./WordNet-2.0-Exceptions ./smart_common_words.txt ./WordNet-2.0.exc.db
     ```
 
+## Evaluation
+
 9. Evaluate rouge scores: 
     ```
     cd outputs
@@ -97,12 +99,12 @@ python3 -m pipenv install
     Run with the above setup, the results are similar to the reported values of the original paper.
 
 
-## Training
+# Training
 
 ```
 python main.py -device 0 -batch_size 16 -model RNN_RNN -seed 1 -save_dir checkpoints/my_trained_model_RNNRNN_seed1.pt
 ```
-### Data format
+## Data format
 Training, validation, test data are json objects:
 ```
 {
@@ -115,16 +117,16 @@ The sentences of ``doc`` are separated by `\n`. The labels correspond to either 
 
 The training process also requires word embeddings and a vocabulary built from the embeddings.
 
-### Word embeddings
+## Word embeddings
 The data has 100-dimensional word2vec embeddings that are already trained on the CNN/Daily Mail corpus. If the embeddings change you might need to rebuild the vocabulary (``preprocess.py``).
 
 
-## Labeler
+# Labeler
 The heuristic algorithm for labeling sentences for extractive training is in ``extractive_labeler``. Although it seems like a faithful implementation of the paper's greedy algorithm, it does not always give the same result as hpzhao's labeled dataset.
 
 When training on a new dataset, the sentences must all be labelled first. In the case of the DailyMail dataset provided here, it is already labeled so there is no need to run this.
 
-### Usage
+## Usage
 ```
 usage: new_heuristic_labeler.py [-h] -i I -o O
 
@@ -136,18 +138,18 @@ optional arguments:
 
 The script accepts an input that has one json object per line. Each json object should have a `"doc"` and `"summaries"` key. The sentences must be separated by new lines (`\n`). See the example input and output in ``extractive_labeler``.
 
-### Setting up new datasets for testing or training
+## Setting up new datasets for testing or training
 - Run some preprocessing script to get the correct format with "doc" and "summaries" (such as ``utils/process_reddit_dataset.py``)
 - Run the labeler
 - Name the output `test.json`, `train.json`, or `val.json`
 
 
-## New datasets to test on
+# New datasets to test on
 
 **This section details the reproduction of results reported in our paper.**
 
 
-### Reddit
+## Reddit
 - Reddit stories (raw): https://github.com/WiIIiamTang/summarunner-reddit-datasets
 
 - RedditTLDR (already preprocessed): https://drive.google.com/drive/folders/1ytMH0dbmJb6HuTE9XmjPfY9CuaVOVl6a?usp=sharing
@@ -161,7 +163,7 @@ For preprocessing, note that we labeled these datasets but ended up not using th
 
 ---
 
-### Books
+## Books
 
 Run the files as explained in https://github.com/manestay/novel-chapter-dataset. Once the pks files are scraped, put those files in example_datasets folder. 
 
@@ -179,7 +181,7 @@ Finally the scores are stored and kept in the folder: outputs/book_data/scores.
 
 ---
 
-### Research Articles
+## Research Articles
 
 Raw train, validation, and test datasets can be found here: https://github.com/yaolu/Multi-XScience/tree/master/data
 
@@ -190,28 +192,32 @@ Here the output are in the correct format for SummaRuNNer and the model can be t
 ---
 
 
-#### Evaluation:
+## Evaluation:
 
 Evalute ROUGE metrics by running ```outputs/eval.py [-b n]```. The full output used for the report is in ``outputs/reddit_test_data.txt``. 
 
 ``-b`` is the byte limit of the summaries. The true summaries must be in ``ref/``, and the model summaries must be in ``hyp/``. Of course, before running the rouge script,  you have to generate the summaries for each dataset. To generate them yourself, follow these steps to generate summaries:
 
-#### RNN
+### RNN
 For SummaRuNNer models, run ```main.py -test -batch_size 1 -device 0 -test_dir xxx -load_dir xxx -device 0 [-b n] [-topk n]```
 
 Where ``-b`` is the byte limit of the summaries and ``-topk`` is the max number of sentences to take from the document for summarization. Set the test dir and load dir based on where your dataset and pretrained model is. For example, for 75 byte length limit, use ``-b 75``. For full length, **do not use the bytes setting** and use ``-topk`` instead. We used the best ``topk`` based on the validation set.
 - For all **Reddit** datasets, set ``topk`` to 3 when running  a full length test.
+- For research paper datasets, set ``topk`` to 8 when running a full length test, except for the original pretrained SummaRuNNer model. Use 10 in that case.
+- See the book section/scripts for specific settings.
 
-#### Baseline-LEAD-3
+### Baseline-LEAD-3
 For **LEAD-3**, run ``lead3.py`` on each of the datasets.
 
-#### Baseline-Random
+### Baseline-Random
 For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences (``max_sent``) for this as well dpending on if you're testing with byte limit or full length.
 - Set ``max_sent`` to 5 when testing on the Reddit Stories dataset, and 3 when testing on the RedditTLDR dataset.
+- Set ``max_sent`` to 10 when testing on the research papers datasets.
+- See the book section/scripts for specific settings.
 
 ---
 
-### Running the training
+## Running the training
 
 SummaRuNNer trained with GloVe embeddings: https://drive.google.com/drive/folders/1ltTkUX01q713BcToCZl1K6y-JOEaKoBQ?usp=sharing
 
