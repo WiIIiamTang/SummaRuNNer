@@ -212,7 +212,7 @@ For **LEAD-3**, run ``lead3.py`` on each of the datasets.
 ### Baseline-Random
 For **Random**, run ``random_select.py`` on each of the datasets. You need to set the number of bytes or top sentences (``max_sent``) for this as well dpending on if you're testing with byte limit or full length.
 - Set ``max_sent`` to 5 when testing on the Reddit Stories dataset, and 3 when testing on the RedditTLDR dataset.
-- Set ``max_sent`` to 10 when testing on the research papers datasets.
+- Set ``max_sent`` to 8 when testing on the research papers datasets.
 - See the book section/scripts for specific settings.
 
 ---
